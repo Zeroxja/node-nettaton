@@ -9,10 +9,19 @@ exports.getAllScores = function(req, res, next) {
 
   let { offset, limit } = req.query;
 
-  Score.find({})
+  const query = Score.find({})
     .skip(parseFloat(offset))
     .limit(parseFloat(limit))
-    .then(score => res.json(score))
+
+  return Promise.all([query, Score.find({}).count()])
+    .then((results) => {
+      res.json({
+        scores: results[0],
+        count: results[1],
+        offset,
+        limit
+      });
+    })
     .catch(err => res.json(err));
 },
 
