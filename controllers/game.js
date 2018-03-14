@@ -40,10 +40,17 @@ exports.saveScore = function(req, res, next) {
     return res.status(422).send({ error: 'You must provide userAnswer, actualAnswer and id' });
   }
 
+  var correct = false;
+  // check if the answer was correct
+  if (actualAnswer === userAnswer) {
+    var correct = true;
+  }
+
   // create score model
   const score = new Score({
-    userAnswer: userAnswer,
-    actualAnswer: actualAnswer
+    userAnswer,
+    actualAnswer,
+    correct
   });
 
   // find the correct user
