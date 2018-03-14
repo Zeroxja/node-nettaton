@@ -6,7 +6,12 @@ const User = require('../models/user');
 
 // return all scores
 exports.getAllScores = function(req, res, next) {
+
+  let { offset, limit } = req.query;
+
   Score.find({})
+    .skip(parseFloat(offset))
+    .limit(parseFloat(limit))
     .then(score => res.json(score))
     .catch(err => res.json(err));
 },
@@ -14,10 +19,6 @@ exports.getAllScores = function(req, res, next) {
 // return all scores for a user
 exports.getScore = function(req, res, next) {
   const { username } = req.params;
-
-  if (!username) {
-    return res.status(422).send({ error: 'You must provide an id, score?id=1234' });
-  }
 
   User.findOne({ username }).populate('scores')
     .then((user) => {
