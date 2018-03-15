@@ -6,14 +6,20 @@ const User = require('../models/user');
 
 // return all scores
 exports.getAllScores = function(req, res, next) {
+  let { offset, limit, correct } = req.query;
+  var criteria = {};
+  console.log(correct);
+  if (correct != undefined) {
+    var criteria = { correct };
+  }
 
-  let { offset, limit } = req.query;
+  console.log(criteria);
 
-  const query = Score.find({})
+  const query = Score.find(buildQuery(criteria))
     .skip(parseFloat(offset))
     .limit(parseFloat(limit))
 
-  return Promise.all([query, Score.find({}).count()])
+  return Promise.all([query, Score.find(buildQuery(criteria)).count()])
     .then((results) => {
       res.json({
         scores: results[0],
@@ -82,3 +88,13 @@ exports.saveScore = function(req, res, next) {
       res.json(err);
     });
 }
+
+const buildQuery = (criteria) => {
+  const query = {};
+
+  if (criteria.correct) {
+    query.correct = criteria.correct;
+  }
+
+  return query;
+};

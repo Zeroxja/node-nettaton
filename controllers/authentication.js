@@ -5,15 +5,14 @@ const config = require('../config');
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
   // iat = issued at time
-  console.log(timestamp);
-  console.log(user.id);
   return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 
 exports.signin = function(req, res, next) {
   // User has already had their email and password auth'd
   // we just need to give them a token
-  res.send({ token: tokenForUser(req.user) });
+  const _id = req.user._id;
+  res.send({ _id, token: tokenForUser(req.user) });
 }
 
 exports.signup = function(req, res, next) {

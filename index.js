@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 // DB Setup
-mongoose.connect('mongodb://localhost/auth');
+mongoose.connect('mongodb://localhost/nettaton');
 // .catch(err => { // we will not be here...
 //   console.error('App starting error:', err.stack);
 //   process.exit(1);
