@@ -11,8 +11,7 @@ function tokenForUser(user) {
 exports.signin = function(req, res, next) {
   // User has already had their email and password auth'd
   // we just need to give them a token
-  const _id = req.user._id;
-  res.send({ _id, token: tokenForUser(req.user) });
+  res.send({ token: tokenForUser(req.user) });
 }
 
 exports.signup = function(req, res, next) {
@@ -54,7 +53,6 @@ exports.signup = function(req, res, next) {
   
       user.save(function(err) {
         if (err) { return next(err); }
-  
         // Respond to request indicating the user was created
         res.json({ token: tokenForUser(user) });
       });

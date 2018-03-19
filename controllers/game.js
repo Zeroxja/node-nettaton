@@ -8,12 +8,10 @@ const User = require('../models/user');
 exports.getAllScores = function(req, res, next) {
   let { offset, limit, correct } = req.query;
   var criteria = {};
-  console.log(correct);
+
   if (correct != undefined) {
     var criteria = { correct };
   }
-
-  console.log(criteria);
 
   const query = Score.find(buildQuery(criteria))
     .skip(parseFloat(offset))
@@ -33,11 +31,17 @@ exports.getAllScores = function(req, res, next) {
 
 // return all scores for a user
 exports.getScore = function(req, res, next) {
+  const authedUser = req.user.username;
   const { username } = req.params;
+
+  // check that the users score being requested matches the users token
+  if (authedUser != username) {
+    res.json({ auth: "unauthorised" })
+  }
 
   User.findOne({ username }).populate('scores')
     .then((user) => {
-      if (user) {
+      if (user.scores.length > 0) {
         res.json(user.scores);
       } else {
         res.status(202).send({ info: `No user could be found with and username of ${username}` });
@@ -78,11 +82,11 @@ exports.saveScore = function(req, res, next) {
         user.save()
       ])
     })
+    // .then((user) => {
+    //   return User.findOne({ _id: id }).populate('scores');
+    // })
     .then((user) => {
-      return User.findOne({ _id: id }).populate('scores');
-    })
-    .then((user) => {
-      res.json(user);
+      res.json(user[0]);
     })
     .catch((err) => {
       res.json(err);
