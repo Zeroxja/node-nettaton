@@ -10,7 +10,8 @@ const userSchema = new Schema({
   scores: [{
     type: Schema.Types.ObjectId,
     ref: 'score'
-  }]
+  }],
+  correct: { type: Number, default: 0}
 });
 
 // On Save Hook, encrypt password

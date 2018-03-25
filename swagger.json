@@ -1,0 +1,359 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://virtserver.swaggerhub.com/zerox/nettaton/1.0.0"
+  } ],
+  "info" : {
+    "description" : "api for storing game scores for registered users",
+    "version" : "1.0.0",
+    "title" : "Nettaton score api",
+    "contact" : {
+      "email" : "heap.alexander@gmail.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags" : [ {
+    "name" : "scores",
+    "description" : "Save scores against a user and list scores"
+  }, {
+    "name" : "users",
+    "description" : "Operations to create and list users"
+  } ],
+  "paths" : {
+    "/users/{username}" : {
+      "put" : {
+        "tags" : [ "users" ],
+        "summary" : "updates the users details",
+        "operationId" : "userUpdate",
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/token"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/create_user"
+              }
+            }
+          },
+          "description" : "User to be updated"
+        }
+      }
+    },
+    "/users" : {
+      "get" : {
+        "tags" : [ "users" ],
+        "summary" : "search for users",
+        "operationId" : "searchUser",
+        "description" : "Search for all users\n",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "offset",
+          "description" : "the position to begin searching all scores",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0,
+            "maximum" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/user"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "users" ],
+        "summary" : "creates a user",
+        "operationId" : "createUser",
+        "description" : "Create a new user",
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/create_user"
+              }
+            }
+          },
+          "description" : "User to be saved"
+        }
+      }
+    },
+    "/scores" : {
+      "get" : {
+        "tags" : [ "scores" ],
+        "summary" : "search through a list of scores",
+        "operationId" : "searchScore",
+        "description" : "By passing in the appropriate options, you can search through all the scores.\n",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "correct",
+          "description" : "either true or false when searching for all correct or all incorrect scores",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "in" : "query",
+          "name" : "offset",
+          "description" : "the position to begin searching all scores",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0,
+            "maximum" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "scores" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/scores"
+                      }
+                    },
+                    "count" : {
+                      "type" : "integer",
+                      "example" : 5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "scores" ],
+        "summary" : "adds a new score",
+        "operationId" : "addInventory",
+        "description" : "Adds an item to the system",
+        "responses" : {
+          "201" : {
+            "description" : "score saved",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/scores_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/scores"
+              }
+            }
+          },
+          "description" : "Score to be saved"
+        }
+      }
+    },
+    "/scores/{username}" : {
+      "get" : {
+        "tags" : [ "scores" ],
+        "summary" : "gets all the scores for a single user",
+        "operationId" : "userScores",
+        "description" : "a users game scores",
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/users_scores"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "create_user" : {
+        "type" : "object",
+        "required" : [ "username", "email", "password" ],
+        "properties" : {
+          "username" : {
+            "type" : "string",
+            "example" : "alex"
+          },
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "example" : "alex@example.com"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password;",
+            "example" : "superSecretPassword"
+          }
+        }
+      },
+      "token" : {
+        "type" : "object",
+        "properties" : {
+          "token" : {
+            "type" : "string",
+            "example" : "28ejj28d1i.21e912ld12.12e1djnxncha"
+          }
+        }
+      },
+      "user" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string",
+            "example" : "alex"
+          },
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "example" : "alex@example.com"
+          }
+        }
+      },
+      "users_scores" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string",
+            "example" : "alex"
+          },
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "example" : "alex@example.com"
+          },
+          "scores" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/scores"
+            }
+          }
+        }
+      },
+      "scores" : {
+        "type" : "object",
+        "required" : [ "userAnswer", "actualAnswer", "token" ],
+        "properties" : {
+          "userAnswer" : {
+            "type" : "string",
+            "format" : "ipv4",
+            "example" : "168.273.123.256"
+          },
+          "actualAnswer" : {
+            "type" : "string",
+            "format" : "ipv4",
+            "example" : "168.273.123.256"
+          },
+          "id" : {
+            "type" : "string",
+            "example" : "5aad4c19e395dcc4c81ac866"
+          }
+        }
+      },
+      "scores_response" : {
+        "type" : "object",
+        "required" : [ "userAnswer", "actualAnswer", "token" ],
+        "properties" : {
+          "userAnswer" : {
+            "type" : "string",
+            "format" : "ipv4",
+            "example" : "168.273.123.256"
+          },
+          "actualAnswer" : {
+            "type" : "string",
+            "format" : "ipv4",
+            "example" : "168.273.123.256"
+          },
+          "correct" : {
+            "type" : "boolean",
+            "example" : true
+          },
+          "id" : {
+            "type" : "string",
+            "example" : "5aad4c19e395dcc4c81ac866"
+          }
+        }
+      }
+    }
+  }
+}

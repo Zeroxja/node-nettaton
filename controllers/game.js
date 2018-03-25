@@ -27,22 +27,26 @@ exports.getAllScores = function(req, res, next) {
       });
     })
     .catch(err => res.json(err));
-},
+};
+
+const buildQuery = (criteria) => {
+  const query = {};
+
+  if (criteria.correct) {
+    query.correct = criteria.correct;
+  }
+
+  return query;
+};
 
 // return all scores for a user
 exports.getScore = function(req, res, next) {
-  const authedUser = req.user.username;
   const { username } = req.params;
-
-  // check that the users score being requested matches the users token
-  if (authedUser != username) {
-    res.json({ auth: "unauthorised" })
-  }
 
   User.findOne({ username }).populate('scores')
     .then((user) => {
-      if (user.scores.length > 0) {
-        res.json(user.scores);
+      if (user) {
+        res.json({ username: user.username, score: user.scores });
       } else {
         res.status(202).send({ info: `No user could be found with and username of ${username}` });
       }
@@ -50,7 +54,7 @@ exports.getScore = function(req, res, next) {
     .catch((err) => {
       res.json(err);
     });
-}
+};
 
 // save a score 
 exports.saveScore = function(req, res, next) {
@@ -66,39 +70,27 @@ exports.saveScore = function(req, res, next) {
     var correct = true;
   }
 
-  // create score model
   const score = new Score({
     userAnswer,
     actualAnswer,
     correct
   });
 
-  // find the correct user
   User.findOne({ _id: id })
     .then((user) => {
+      if (correct === true) {
+        user.set('correct', user.correct + 1);
+      }
       user.scores.push(score);
       return Promise.all([
         score.save(),
         user.save()
       ])
     })
-    // .then((user) => {
-    //   return User.findOne({ _id: id }).populate('scores');
-    // })
     .then((user) => {
       res.json(user[0]);
     })
     .catch((err) => {
       res.json(err);
     });
-}
-
-const buildQuery = (criteria) => {
-  const query = {};
-
-  if (criteria.correct) {
-    query.correct = criteria.correct;
-  }
-
-  return query;
 };
