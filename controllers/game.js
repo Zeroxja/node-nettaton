@@ -46,7 +46,7 @@ exports.getScore = function(req, res, next) {
   User.findOne({ username }).populate('scores')
     .then((user) => {
       if (user) {
-        res.json({ username: user.username, score: user.scores });
+        res.json({ username: user.username, correct_scores: user.correct, score: user.scores });
       } else {
         res.status(202).send({ info: `No user could be found with and username of ${username}` });
       }
