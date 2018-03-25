@@ -3,9 +3,14 @@ const Schema = mongoose.Schema;
 
 // Define our model
 const scoreSchema = new Schema({
-  userAnswer: String,
-  actualAnswer: String,
-  correct: { type: Boolean, default: false }
+  answer: String,
+  correct: { type: Boolean, default: false },
+  question: {
+    ip_address: String,
+    network: String,
+    question_type: String,
+    correct_answer: String
+  }
 });
 
 // Create the model class

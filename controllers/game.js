@@ -58,24 +58,32 @@ exports.getScore = function(req, res, next) {
 
 // save a score 
 exports.saveScore = function(req, res, next) {
-  const { userAnswer, actualAnswer, id } = req.body;
+  const { answer, id, question } = req.body;
 
-  if (!userAnswer || !actualAnswer || !id) {
-    return res.status(422).send({ error: 'You must provide userAnswer, actualAnswer and id' });
+  if (!answer || !question || !id) {
+    return res.status(422).send({ error: 'You must provide answer, question and a id' });
   }
+
+  const { ip_address, network, question_type, correct_answer } = req.body.question;
 
   var correct = false;
   // check if the answer was correct
-  if (actualAnswer === userAnswer) {
+  if (answer === correct_answer) {
     var correct = true;
   }
 
   const score = new Score({
-    userAnswer,
-    actualAnswer,
-    correct
+    answer,
+    correct,
+    question: {
+      ip_address,
+      network,
+      question_type,
+      correct_answer
+    }
   });
 
+  // find the user and save both user and score together
   User.findOne({ _id: id })
     .then((user) => {
       if (correct === true) {
