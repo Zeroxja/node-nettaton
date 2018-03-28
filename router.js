@@ -15,10 +15,13 @@ module.exports = function(app) {
   app.post('/signin', requireSignin, Authentication.signin);
   // Create a new user
   app.post('/signup', Authentication.signup);
+  // Get a list of highscores
+  app.get('/score/highscore', Game.highscore);
   // Get all the past game scores for a username
   app.get('/score', requireAuth, Game.getAllScores);
   // Get a users scores
   app.get('/score/:username', requireAuth, Game.getScore);
   // Save the game score
   app.post('/score', requireAuth, Game.saveScore);
+  
 }

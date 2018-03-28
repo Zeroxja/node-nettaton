@@ -56,6 +56,19 @@ exports.getScore = function(req, res, next) {
     });
 };
 
+exports.highscore = function(req, res, next) {
+  let { offset, limit, correct } = req.query;
+
+  const query = User.find({})
+    .skip(parseFloat(offset))
+    .limit(parseFloat(limit))
+    .sort({ correct: -1 })
+    .then((highscore) => {
+      res.json(highscore);
+    })
+    .catch(err => res.json(err));
+};
+
 // save a score 
 exports.saveScore = function(req, res, next) {
   const { answer, id, question } = req.body;
