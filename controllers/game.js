@@ -62,7 +62,7 @@ exports.highscore = function(req, res, next) {
   const query = User.find({})
     .skip(parseFloat(offset))
     .limit(parseFloat(limit))
-    .sort({ correct: -1 })
+    .sort({ correct: 1 })
     .then((highscore) => {
       res.json(highscore);
     })
