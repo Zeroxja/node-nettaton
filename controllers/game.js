@@ -57,14 +57,20 @@ exports.getScore = function(req, res, next) {
 };
 
 exports.highscore = function(req, res, next) {
-  let { offset, limit, correct } = req.query;
-
-  const query = User.find({})
+  let { offset, limit, correct, scoreLimit, scoreOffset } = req.query;
+  const query = User.find({}).populate({
+      path:'scores',
+      options: {
+        limit: parseFloat(scoreLimit),
+        skip: parseFloat(scoreOffset)
+      }
+    })
+    .select('username correct _id')
     .skip(parseFloat(offset))
     .limit(parseFloat(limit))
     .sort({ correct: 1 })
-    .then((highscore) => {
-      res.json(highscore);
+    .then((user) => {
+      res.json(user);
     })
     .catch(err => res.json(err));
 };
